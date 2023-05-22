@@ -1074,7 +1074,7 @@ NAME : LETTER ( LETTER | DIGITS)*
  *  should make us exit loop not continue.
  */
 STRING
-    :   ('r'|'u'|'ur'|'R'|'U'|'UR'|'uR'|'Ur')?
+    :   ('f'|'r'|'u'|'ur'|'F'|'R'|'U'|'UR'|'uR'|'Ur')?
         (   '\'\'\'' (options {greedy=false;}:TRIAPOS)* '\'\'\''
         |   '"""' (options {greedy=false;}:TRIQUOTE)* '"""'
         |   '"' (ESC|~('\\'|'\n'|'"'))* '"'
@@ -1088,14 +1088,14 @@ STRING
     ;
 
 TRISTRINGPART
-    : ('r'|'u'|'ur'|'R'|'U'|'UR'|'uR'|'Ur')?
+    : ('f'|'r'|'u'|'ur'|'F'|'R'|'U'|'UR'|'uR'|'Ur')?
         (   '\'\'\'' ~('\'\'\'')*
         |   '"""' ~('"""')*
         )
     ;
 
 STRINGPART
-    : ('r'|'u'|'ur'|'R'|'U'|'UR'|'uR'|'Ur')?
+    : ('f'|'r'|'u'|'ur'|'F'|'R'|'U'|'UR'|'uR'|'Ur')?
         (   '"' (ESC|~('\\'|'\n'|'"'))* CONTINUED_LINE
         |   '\'' (ESC|~('\\'|'\n'|'\''))* CONTINUED_LINE
         )

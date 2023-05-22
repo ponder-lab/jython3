@@ -552,6 +552,11 @@ public class GrammarActions {
             raw = true;
             start++;
         }
+        boolean fString = false;
+        if (quoteChar == 'f' || quoteChar == 'F') {
+            fString = true;
+            start++;
+        }
         int quotes = 3;
         if (string.length() - start == 2) {
             quotes = 1;
@@ -581,6 +586,9 @@ public class GrammarActions {
 //                // Raw unicode: handle unicode escapes
 //                string = codecs.PyUnicode_DecodeRawUnicodeEscape(string, "strict");
 //            }
+        } else if (fString) {
+            // Since f-strings aren't evaluated until run-time, just substring.
+            string = string.substring(start, end);
         } else {
             // Plain unicode: already decoded, just handle escapes
             string = Encoding.decode_UnicodeEscape(string, start, end, "strict", ustring);
