@@ -158,7 +158,7 @@
           <pathelement path="${extlibs.dir}/asm-commons-5.1.jar" />
           <pathelement path="${extlibs.dir}/asm-tree-5.1.jar" />
           <pathelement path="${extlibs.dir}/asm-util-5.1.jar" />
-          <pathelement path="${extlibs.dir}/guava-18.0.jar" />
+          <pathelement path="${extlibs.dir}/guava-33.4.8-jre.jar" />
           <pathelement path="${extlibs.dir}/icu4j-57.1.jar" />
           <pathelement path="${extlibs.dir}/jffi-arm-Linux.jar"/>
           <pathelement path="${extlibs.dir}/jffi-Darwin.jar"/>
@@ -609,7 +609,7 @@
         <rule pattern="org.bouncycastle.**" result="org.python.bouncycastle.@1"/>
         <zipfileset src="extlibs/commons-compress-1.9.jar"/>
         <rule pattern="org.apache.**" result="org.python.apache.@1"/>
-        <zipfileset src="extlibs/guava-18.0.jar"/>
+        <zipfileset src="extlibs/guava-33.4.8-jre.jar"/>
         <rule pattern="com.google.**" result="org.python.google.@1"/>
         <zipfileset src="extlibs/icu4j-57.1.jar"/>
         <rule pattern="com.ibm.icu.**" result="org.python.icu.@1"/>

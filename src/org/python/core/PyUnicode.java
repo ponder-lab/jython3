@@ -611,7 +611,7 @@ public class PyUnicode extends PySequence implements Iterable {
     }
 
     public static String checkEncoding(String s) {
-        if (s == null || CharMatcher.ASCII.matchesAllOf(s)) { return s; }
+        if (s == null || CharMatcher.ascii().matchesAllOf(s)) { return s; }
         return codecs.PyUnicode_EncodeASCII(s, s.length(), null);
     }
 
