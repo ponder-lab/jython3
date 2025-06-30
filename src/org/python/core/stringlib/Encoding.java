@@ -335,19 +335,19 @@ public class Encoding {
     }
 
     public static final boolean isLowercase(CharSequence s) {
-        return s.length() != 0 && CharMatcher.JAVA_LOWER_CASE.matchesAllOf(s);
+        return s.length() != 0 && CharMatcher.javaLowerCase().matchesAllOf(s);
     }
 
     public static final boolean isUppercase(CharSequence s) {
-        return s.length() != 0 && CharMatcher.JAVA_UPPER_CASE.matchesAllOf(s);
+        return s.length() != 0 && CharMatcher.javaUpperCase().matchesAllOf(s);
     }
 
     public static final boolean isAlpha(CharSequence s) {
-        return s.length() != 0 && CharMatcher.JAVA_LETTER.matchesAllOf(s);
+        return s.length() != 0 && CharMatcher.javaLetter().matchesAllOf(s);
     }
 
     public static final boolean isAlnum(CharSequence s) {
-        return s.length() != 0 && CharMatcher.JAVA_LETTER_OR_DIGIT.matchesAllOf(s);
+        return s.length() != 0 && CharMatcher.javaLetterOrDigit().matchesAllOf(s);
     }
 
     public static final boolean isDecimal(CharSequence s) {
@@ -360,7 +360,7 @@ public class Encoding {
     }
 
     public static final boolean isDigit(CharSequence s) {
-        return s.length() != 0 && CharMatcher.DIGIT.matchesAllOf(s);
+        return s.length() != 0 && CharMatcher.digit().matchesAllOf(s);
     }
 
     public static final boolean isNumeric(CharSequence s) {
@@ -408,7 +408,7 @@ public class Encoding {
     }
 
     public static final boolean isSpace(CharSequence s) {
-        return s.length() != 0 && CharMatcher.WHITESPACE.matchesAllOf(s);
+        return s.length() != 0 && CharMatcher.whitespace().matchesAllOf(s);
     }
 
     public static PyObject format(CharSequence s, PyObject formatSpec, boolean bytes) {

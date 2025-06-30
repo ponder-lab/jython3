@@ -759,7 +759,7 @@ public final class Py {
     }
 
     public static PyBytes newStringUTF8(String s) {
-        if (CharMatcher.ASCII.matchesAllOf(s)) {
+        if (CharMatcher.ascii().matchesAllOf(s)) {
             // ascii of course is a subset of UTF-8
             return Py.newString(s);
         } else {
