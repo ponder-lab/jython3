@@ -137,6 +137,11 @@
         <property name="extlibs.dir" value="${jython.base.dir}/extlibs" />
         <property name="output.dir" value="${work.dir}/build" />
         <property name="compile.dir" value="${output.dir}/classes" />
+        <!-- Test fixtures from ${test.source.dir} are compiled here, NOT into
+             ${compile.dir}, so that they don't leak into ${jython.dev.jar}.
+             Leaking test classes (especially ProxyDeserialization at the default
+             package) breaks downstream OSGi bundle wrapping; see wala/ML#557. -->
+        <property name="test.compile.dir" value="${output.dir}/test-classes" />
         <property name="exposed.dir" value="${output.dir}/exposed" />
         <property name="gensrc.dir" value="${output.dir}/gensrc" />
         <property name="dist.dir" value="${work.dir}/dist" />
@@ -209,6 +214,7 @@
           -->
           <pathelement path="${exposed.dir}" />
           <pathelement path="${compile.dir}" />
+          <pathelement path="${test.compile.dir}" />
           <pathelement path="${cpptasks.jar.dir}" />
         </path>
         <property name="jython.dev.jar" value="jython-dev.jar" />
@@ -339,6 +345,7 @@
       <!-- create output directories -->
       <target name ="prepare-output" depends="init,needed-check,clean-if-antlr-needed">
         <mkdir dir="${compile.dir}" />
+        <mkdir dir="${test.compile.dir}" />
         <mkdir dir="${gensrc.dir}/org/python/antlr" />
         <mkdir dir="${exposed.dir}" />
         <mkdir dir="${dist.dir}" />
@@ -515,9 +522,10 @@
         <compilerarg line="${javac.Xlint}"/>
       </javac>
 
-      <!-- java files used by tests -->
+      <!-- java files used by tests; kept out of ${compile.dir} so that
+           ${jython.dev.jar} contains production classes only (wala/ML#557). -->
       <javac srcdir="${test.source.dir}"
-        destdir="${compile.dir}"
+        destdir="${test.compile.dir}"
         target="${jdk.target.version}"
         source="${jdk.source.version}"
         debug="${debug}"
