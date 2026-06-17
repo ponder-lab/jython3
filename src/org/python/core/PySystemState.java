@@ -1149,8 +1149,8 @@ public class PySystemState extends PyObject implements AutoCloseable, Closeable,
         SysModule.setObject("_jy_console", Py.java2py(Py.getConsole()));
 
         try {
-            InputStream _frozen_importlib_input =  new FileInputStream(new File("src/resources/frozen_importlib/_frozen_importlib.class"));
-            InputStream _frozen_importlib_external_input =  new FileInputStream(new File("src/resources/frozen_importlib/_frozen_importlib_external.class"));
+            InputStream _frozen_importlib_input = openFrozenImportlib("_frozen_importlib.class");
+            InputStream _frozen_importlib_external_input = openFrozenImportlib("_frozen_importlib_external.class");
             PyObject _frozen_importlib = imp.loadFromCompiled("_frozen_importlib", _frozen_importlib_input, "_bootstrap.py", "_frozen_importlib.class");
             imp.loadFromCompiled("_frozen_importlib_external", _frozen_importlib_external_input, "_bootstrap_external.py", "_frozen_importlib_external.class");
             Py.defaultSystemState.importlib = _frozen_importlib;
@@ -1162,6 +1162,29 @@ public class PySystemState extends PyObject implements AutoCloseable, Closeable,
         Py.defaultSystemState.initstdio();
         Py.defaultSystemState.initEncoding();
         return Py.defaultSystemState;
+    }
+
+    /**
+     * Opens a frozen importlib bootstrap resource independent of the current working directory.
+     * Tries the classpath first (when the resources are packaged on it), then resolves under {@code
+     * python.home} (the prefix that embedding clients and tests point at Jython's resources), and
+     * only then falls back to the historical working-directory-relative path. Loading from a bare
+     * relative path failed whenever Jython was initialized from a directory other than the source
+     * tree root (e.g., a Maven module or an OSGi bundle), leaving {@code sys.importlib} null.
+     */
+    private static InputStream openFrozenImportlib(String name) throws FileNotFoundException {
+        InputStream onClasspath = PySystemState.class.getResourceAsStream("/frozen_importlib/" + name);
+        if (onClasspath != null) {
+            return onClasspath;
+        }
+        if (prefix != null && prefix.toString().length() > 0) {
+            File underHome =
+                    new File(new File(prefix.toString(), "src/resources/frozen_importlib"), name);
+            if (underHome.isFile()) {
+                return new FileInputStream(underHome);
+            }
+        }
+        return new FileInputStream(new File("src/resources/frozen_importlib/" + name));
     }
 
     private static PyTuple getVersionInfo() {
