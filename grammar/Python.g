@@ -801,13 +801,25 @@ expr_stmt
         (
           (at=ASSIGN av=testlist_star_expr[expr_contextType.Load]
             {
-                stype = new AnnAssign($lhs.tree, actions.castExpr($lhs.tree),
-                    actions.castExpr($ann.tree), actions.castExpr($av.tree), 1);
+                expr annTarget = actions.castExpr($lhs.tree);
+                actions.checkAnnAssign(annTarget);
+                stype = new AnnAssign($lhs.tree, annTarget, actions.castExpr($ann.tree),
+                    actions.castExpr($av.tree), annTarget instanceof Name ? 1 : 0);
+            }
+          )
+        | (ay=ASSIGN yv=yield_expr
+            {
+                expr annTarget = actions.castExpr($lhs.tree);
+                actions.checkAnnAssign(annTarget);
+                stype = new AnnAssign($lhs.tree, annTarget, actions.castExpr($ann.tree),
+                    actions.castExpr($yv.etype), annTarget instanceof Name ? 1 : 0);
             }
           )
         | {
-                stype = new AnnAssign($lhs.tree, actions.castExpr($lhs.tree),
-                    actions.castExpr($ann.tree), null, 1);
+                expr annTarget = actions.castExpr($lhs.tree);
+                actions.checkAnnAssign(annTarget);
+                stype = new AnnAssign($lhs.tree, annTarget, actions.castExpr($ann.tree),
+                    null, annTarget instanceof Name ? 1 : 0);
           }
         )
     | (testlist_star_expr[null] ASSIGN) => lhs=testlist_star_expr[expr_contextType.Store]

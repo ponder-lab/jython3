@@ -733,6 +733,17 @@ public class GrammarActions {
         }
     }
 
+    // PEP-526 annotated assignment target. Unlike a plain assignment, only a single Name, Attribute,
+    // or Subscript may be annotated; CPython rejects tuple/list/starred targets.
+    void checkAnnAssign(expr e) {
+        checkGenericAssign(e);
+        if (e instanceof Tuple || e instanceof org.python.antlr.ast.List) {
+            errorHandler.error("only single target (not tuple) can be annotated", e);
+        } else if (e instanceof org.python.antlr.ast.Starred) {
+            errorHandler.error("starred assignment target cannot be annotated", e);
+        }
+    }
+
     List<expr> makeDeleteList(List deletes) {
         List<expr> exprs = castExprs(deletes);
         for(expr e : exprs) {
