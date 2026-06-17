@@ -6,6 +6,7 @@ import org.python.core.CompilerFlags;
 import org.python.core.ParserFacade;
 import org.python.core.Py;
 import org.python.core.PyBytes;
+import org.python.core.PyUnicode;
 import org.python.core.PyCode;
 import org.python.core.PyException;
 import org.python.core.PyFile;
@@ -246,7 +247,10 @@ public class PythonInterpreter implements AutoCloseable, Closeable {
      */
     public PyObject eval(String s) {
         setSystemState();
-        return __builtin__.eval(new PyBytes(s), getLocals());
+        // Python 3's eval() requires a str (or code object); a bytes argument raises
+        // "eval: argument 1 must be string or code object". The source must therefore be a
+        // PyUnicode, not a PyBytes (the latter is the post-PEP-393 bytes type).
+        return __builtin__.eval(new PyUnicode(s), getLocals());
     }
 
     /**
