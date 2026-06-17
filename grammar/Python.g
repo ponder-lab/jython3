@@ -797,7 +797,7 @@ expr_stmt
            }
           )
         )
-    | (testlist_star_expr[null] ':' test[null]) => lhs=testlist_star_expr[expr_contextType.Store] ':' ann=test[null]
+    | (testlist_star_expr[null] ':' test[null]) => lhs=testlist_star_expr[expr_contextType.Store] ':' ann=test[expr_contextType.Load]
         (
           (at=ASSIGN av=testlist_star_expr[expr_contextType.Load]
             {

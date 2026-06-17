@@ -737,8 +737,10 @@ public class GrammarActions {
     // or Subscript may be annotated; CPython rejects tuple/list/starred targets.
     void checkAnnAssign(expr e) {
         checkGenericAssign(e);
-        if (e instanceof Tuple || e instanceof org.python.antlr.ast.List) {
+        if (e instanceof Tuple) {
             errorHandler.error("only single target (not tuple) can be annotated", e);
+        } else if (e instanceof org.python.antlr.ast.List) {
+            errorHandler.error("only single target (not list) can be annotated", e);
         } else if (e instanceof org.python.antlr.ast.Starred) {
             errorHandler.error("starred assignment target cannot be annotated", e);
         }
