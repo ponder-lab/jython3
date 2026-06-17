@@ -75,6 +75,12 @@ public class AstAdapters {
         if (o == null || o instanceof Integer) {
             return (Integer)o;
         }
+        // A Python int (e.g. from exposed AST construction) must round-trip to a Java Integer;
+        // this previously returned null for a PyInteger/PyLong, which then unboxed to a
+        // NullPointerException on read. Non-integer objects (including None) map to null, as before.
+        if (o instanceof PyInteger || o instanceof PyLong) {
+            return ((PyObject)o).asInt();
+        }
         return null;
     }
 

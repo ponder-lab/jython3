@@ -87,6 +87,7 @@ import org.python.antlr.PythonTree;
 import org.python.antlr.ast.alias;
 import org.python.antlr.ast.arg;
 import org.python.antlr.ast.arguments;
+import org.python.antlr.ast.AnnAssign;
 import org.python.antlr.ast.Assert;
 import org.python.antlr.ast.Assign;
 import org.python.antlr.ast.AsyncFor;
@@ -796,20 +797,30 @@ expr_stmt
            }
           )
         )
-    | (testlist_star_expr[null] ':' test[null] ASSIGN) => lhs=testlist_star_expr[expr_contextType.Store] ':' test[null]
+    | (testlist_star_expr[null] ':' test[null]) => lhs=testlist_star_expr[expr_contextType.Store] ':' ann=test[expr_contextType.Load]
         (
-        | ((at=ASSIGN t+=testlist_star_expr[expr_contextType.Store])+
+          (at=ASSIGN av=testlist_star_expr[expr_contextType.Load]
             {
-                stype = new Assign($lhs.tree, actions.makeAssignTargets(
-                    actions.castExpr($lhs.tree), $t), actions.makeAssignValue($t));
+                expr annTarget = actions.castExpr($lhs.tree);
+                actions.checkAnnAssign(annTarget);
+                stype = new AnnAssign($lhs.tree, annTarget, actions.castExpr($ann.tree),
+                    actions.castExpr($av.tree), annTarget instanceof Name ? 1 : 0);
             }
           )
-        | ((ay=ASSIGN y2+=yield_expr)+
+        | (ay=ASSIGN yv=yield_expr
             {
-                stype = new Assign($lhs.start, actions.makeAssignTargets(
-                    actions.castExpr($lhs.tree), $y2), actions.makeAssignValue($y2));
+                expr annTarget = actions.castExpr($lhs.tree);
+                actions.checkAnnAssign(annTarget);
+                stype = new AnnAssign($lhs.tree, annTarget, actions.castExpr($ann.tree),
+                    actions.castExpr($yv.etype), annTarget instanceof Name ? 1 : 0);
             }
           )
+        | {
+                expr annTarget = actions.castExpr($lhs.tree);
+                actions.checkAnnAssign(annTarget);
+                stype = new AnnAssign($lhs.tree, annTarget, actions.castExpr($ann.tree),
+                    null, annTarget instanceof Name ? 1 : 0);
+          }
         )
     | (testlist_star_expr[null] ASSIGN) => lhs=testlist_star_expr[expr_contextType.Store]
         (

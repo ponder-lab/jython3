@@ -607,6 +607,20 @@ public class CodeCompiler extends Visitor implements Opcodes, ClassConstants {
     }
 
     @Override
+    public Object visitAnnAssign(AnnAssign node) throws Exception {
+        setline(node);
+        // `target: annotation = value` binds the target exactly like a plain assignment;
+        // `target: annotation` with no value performs no binding. The annotation expression is not
+        // evaluated and `__annotations__` is not updated (a further enhancement, matching the
+        // limited annotation support elsewhere in this compiler).
+        if (node.getInternalValue() != null) {
+            visit(node.getInternalValue());
+            set(node.getInternalTarget());
+        }
+        return null;
+    }
+
+    @Override
     public Object visitDelete(Delete node) throws Exception {
         setline(node);
         traverse(node);

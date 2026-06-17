@@ -33,6 +33,7 @@ public class AstModule {
         dict.__setitem__("AsyncFunctionDef", AsyncFunctionDef.TYPE);
         dict.__setitem__("AsyncWith", AsyncWith.TYPE);
         dict.__setitem__("AugAssign", AugAssign.TYPE);
+        dict.__setitem__("AnnAssign", AnnAssign.TYPE);
         dict.__setitem__("BinOp", BinOp.TYPE);
         dict.__setitem__("BoolOp", BoolOp.TYPE);
         dict.__setitem__("Break", Break.TYPE);
