@@ -734,15 +734,21 @@ public class GrammarActions {
     }
 
     // PEP-526 annotated assignment target. Unlike a plain assignment, only a single Name, Attribute,
-    // or Subscript may be annotated; CPython rejects tuple/list/starred targets.
+    // or Subscript may be annotated. CPython gives tuple/list their own messages and rejects every
+    // other non-storeable target (starred, dict/set literals, True/False, etc.) with a catch-all
+    // "illegal target for annotation". checkGenericAssign already covers numbers, strings, calls,
+    // operators and comprehensions, but not dict/set literals or True/False, so the final allow-list
+    // below is what actually blocks those from reaching CodeCompiler.visitAnnAssign's set(target).
     void checkAnnAssign(expr e) {
         checkGenericAssign(e);
         if (e instanceof Tuple) {
             errorHandler.error("only single target (not tuple) can be annotated", e);
         } else if (e instanceof org.python.antlr.ast.List) {
             errorHandler.error("only single target (not list) can be annotated", e);
-        } else if (e instanceof org.python.antlr.ast.Starred) {
-            errorHandler.error("starred assignment target cannot be annotated", e);
+        } else if (!(e instanceof Name
+                || e instanceof Attribute
+                || e instanceof org.python.antlr.ast.Subscript)) {
+            errorHandler.error("illegal target for annotation", e);
         }
     }
 
